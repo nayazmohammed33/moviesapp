@@ -1,6 +1,7 @@
 import "./App.css";
+import { Addmovie } from "./components/Addmovie";
 import MoviesList from "./components/MoviesList";
-import { useEffect, useState,useCallback,useRef } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 
 function App() {
   const [movies, setMovies] = useState([]);
@@ -9,38 +10,50 @@ function App() {
   const [retrying, setRetrying] = useState(true);
   const retryTimeoutRef = useRef(null);
 
-  const fetchDataHandler = useCallback((async () => {
+  const fetchDataHandler = useCallback(async () => {
     if (!retrying) {
       return;
     }
     setLoading(true);
     try {
-      const response = await fetch("https://swapi.dev/api/fil/");
+      const response = await fetch(
+        "https://reactmovieapp-6f981-default-rtdb.firebaseio.com/movies.json",
+      );
       if (!response.ok) {
         throw new Error("Something went Wrong!");
       }
       const data = await response.json();
 
-      setMovies(data.results);
+      const loadedMovies = [];
+      for (const key in data) {
+        loadedMovies.push({
+          id: key,
+          title: data[key].title,
+          openingText: data[key].openingText,
+          releaseDate: data[key].releaseDate,
+        });
+      }
+
+      setMovies(loadedMovies);
     } catch (error) {
       setError(error.message);
 
       retryTimeoutRef.current = setTimeout(() => {
-        fetchDataHandler(); 
+        fetchDataHandler();
       }, 5000);
-    }finally { 
+    } finally {
       setLoading(false);
-      }    
+    }
     setLoading(false);
-  }),[retrying]);
+  }, [retrying]);
 
-const cancelHandler = () => {
- setRetrying(false);
- if(retryTimeoutRef.current){
-  clearTimeout(retryTimeoutRef.current);
- }
- setError("Retrying cancelled.");
-}
+  const cancelHandler = () => {
+    setRetrying(false);
+    if (retryTimeoutRef.current) {
+      clearTimeout(retryTimeoutRef.current);
+    }
+    setError("Retrying cancelled.");
+  };
   useEffect(() => {
     fetchDataHandler();
   }, [fetchDataHandler]);
@@ -48,6 +61,7 @@ const cancelHandler = () => {
   return (
     <div className="App">
       <div className="container">
+        <Addmovie />
         <div>
           <button onClick={() => fetchDataHandler()}>Fetch Movies</button>
           <button onClick={() => cancelHandler()}>Cancel</button>
@@ -61,8 +75,8 @@ const cancelHandler = () => {
               <MoviesList
                 key={movie.episode_id}
                 title={movie.title}
-                openingText={movie.opening_crawl}
-                releaseDate={movie.release_date}
+                openingText={movie.openingText}
+                releaseDate={movie.releaseDate}
               />
             ))}
           {!loading && error && <p>{error}</p>}
