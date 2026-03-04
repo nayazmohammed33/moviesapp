@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./Addmovie.css";
 
-export const Addmovie = () => {
+export const Addmovie = (props) => {
   const [newmovie, setNewmovie] = useState({
     title: "",
     openingText: "",
@@ -22,6 +22,7 @@ export const Addmovie = () => {
       if (!response.ok) {
         throw new Error("Failed to add movie.");
       }
+      if (props.onMovieAdded) { props.onMovieAdded(); }
       const data = await response.json();
       console.log("Movie added:", data);
     } catch (error) {

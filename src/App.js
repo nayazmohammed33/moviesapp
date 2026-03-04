@@ -58,10 +58,27 @@ function App() {
     fetchDataHandler();
   }, [fetchDataHandler]);
 
+  // const deleteMovieHandler = async (id) => {
+  //   try {
+  //     const res = await fetch(
+  //       `https://reactmovieapp-6f981-default-rtdb.firebaseio.com/movies/${id}.json`,
+  //       {
+  //         method: "DELETE",
+  //       }
+  //     );
+  //     if (!res.ok) {
+  //       throw new Error("Failed to delete movie.");
+  //     }
+  //     fetchDataHandler();
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
+
   return (
     <div className="App">
       <div className="container">
-        <Addmovie />
+        <Addmovie onMovieAdded={fetchDataHandler} />
         <div>
           <button onClick={() => fetchDataHandler()}>Fetch Movies</button>
           <button onClick={() => cancelHandler()}>Cancel</button>
@@ -72,12 +89,32 @@ function App() {
           {!loading &&
             movies.length > 0 &&
             movies.map((movie) => (
-              <MoviesList
-                key={movie.episode_id}
-                title={movie.title}
-                openingText={movie.openingText}
-                releaseDate={movie.releaseDate}
-              />
+              <div>
+                <MoviesList
+                  key={movie.id}
+                  title={movie.title}
+                  openingText={movie.openingText}
+                  releaseDate={movie.releaseDate}
+                  onDelete={() => {
+                    fetch(
+                      `https://reactmovieapp-6f981-default-rtdb.firebaseio.com/movies/${movie.id}.json`,
+                      {
+                        method: "DELETE",
+                      },
+                    )
+                      .then((response) => {
+                        if (!response.ok) { throw new Error("Failed to delete movie."); }
+                        fetchDataHandler();
+                      })
+                      .catch((error) => {
+                        console.error(error);
+                      });
+                  }}
+                
+                />
+
+                
+              </div>
             ))}
           {!loading && error && <p>{error}</p>}
         </div>
