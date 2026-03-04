@@ -1,0 +1,48 @@
+/* MoviesList component styles */
+:root{
+	--bg: #ffffff;
+	--muted: #6b7280;
+	--text: #0b2345;
+	--accent: #eef2ff;
+	--card-shadow: rgba(20,30,50,0.08);
+}
+
+.movies-list{
+	background: linear-gradient(180deg, var(--bg) 0%, #fbfdff 100%);
+	border-radius: 12px;
+	padding: 18px;
+	box-shadow: 0 6px 18px var(--card-shadow);
+	max-width: 760px;
+	margin: 14px auto;
+	transition: transform .12s ease, box-shadow .12s ease;
+}
+.movies-list:hover{
+	transform: translateY(-4px);
+	box-shadow: 0 14px 32px rgba(20,30,50,0.12);
+}
+.movies-list .movie-title{
+	margin: 0 0 8px 0;
+	font-size: 1.3rem;
+	color: var(--text);
+	letter-spacing: -0.2px;
+}
+.movies-list .opening-text{
+	margin: 0 0 12px 0;
+	color: #344050;
+	line-height: 1.5;
+	font-size: 0.98rem;
+}
+.movies-list .release-date{
+	display: inline-block;
+	color: var(--muted);
+	font-size: 0.85rem;
+	background: var(--accent);
+	padding: 6px 10px;
+	border-radius: 999px;
+}
+
+@media (min-width: 640px){
+	.movies-list{ padding: 22px; }
+	.movies-list .movie-title{ font-size: 1.45rem; }
+}
+
